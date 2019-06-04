@@ -12,3 +12,11 @@ Analizes your chat with person and makes the psyhological percon portrait
 3) Choose the option (collegium group analiz or our personal chats analiz)
 4) If you choose messager analiz, copy and paste name of the person you want to know about
 5) Enjoy!
+# Files 
+all.json - file with messages
+random.json - file with messages
+main.py - main file
+choosing_the_dialogue.py - detects all your chats
+messager_analys.py - analizes messages 
+analizer.py - analizes user and prints information about it
+cur_dialogue.json - file with the temp dialogue 
