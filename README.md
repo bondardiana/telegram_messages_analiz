@@ -19,4 +19,5 @@ main.py - main file
 choosing_the_dialogue.py - detects all your chats
 messager_analys.py - analizes messages 
 analizer.py - analizes user and prints information about it
+results.txt - collegium needs results
 cur_dialogue.json - file with the temp dialogue 
