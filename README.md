@@ -10,3 +10,5 @@ Analizes your chat with person and makes the psyhological percon portrait
 1) Download your chats from the Telegram as "all.json" and put in in a folder. If you don't use it, use the "all.json" file as an example.
 2) Run the main.py program
 3) Choose the option (collegium group analiz or our personal chats analiz)
+4) If you choose messager analiz, copy and paste name of the person you want to know about
+5) Enjoy!
