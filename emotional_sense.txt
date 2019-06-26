@@ -1,0 +1,66 @@
+1)
+
+Вираховування кількості повідомлень
+
+if self.User.total <= 100:
+      self.frequency = "мало"
+  elif self.User.total < 1000:
+      self.frequency = "достатньо"
+  else:
+      self.frequency = "дуже багато"
+
+2)
+
+Вираховування середньої кількості довжини
+
+
+  self.average_mes_len = int(
+      self.User.text_messages_len/self.User.text_messages)
+
+3)
+
+Вираховування заспамленості речі- кількість слів-паразитів та іншого у відношенні до загальної кількості повідомлень
+
+
+  self.bags = self.cut(int(
+      (self.User.emotions["bags"] + self.User.emotions["other"])/self.User.text_messages * 100))
+
+4)
+
+Вираховування позитивності - кількість сміющіхся смйлів та сміху у відношенні до загальної кількості повідомлень
+  self.positive = self.cut(int(
+      (self.User.emotions["laught"])/self.User.text_messages * 100))
+
+5)
+
+Вираховування негативності- кількість сумних смйлів відношенні до загальної кількості повідомлень
+  self.negative = self.cut(int(
+      (self.User.emotions["sad"])/self.User.text_messages * 100))
+
+
+6)
+
+
+Вираховування стресу - кількість розлючени смйлів та крику у відношенні до загальної кількості повідомлень
+
+
+  self.stress = self.cut(int(
+      (self.User.emotions["stressed"])/self.User.text_messages * 100))
+
+7)
+
+Вираховування самовпевненості - кількість відео повідомлень на аудіо повідомлень у відношенні до загальної кількості повідомлень
+  self.selfish = self.cut(int((self.User.mp4_messages_len*2 +
+                               self.User.mp4_messages_len)/self.User.text_messages_len * 1000))
+
+
+
+8)
+
+ Вираховування бажання спілкуватись - кількіть разів що писав один поділена на кількість того, скільки
+ писав інший та кількість секунд очікування одного поділена на кількість секунд очікування іншого
+try:
+      self.willeness_to_chat = self.cut(int(((self.d_a[1]/self.d_a[0])+(
+          self.d_a[3]/self.d_a[2]))*50+self.User.phone_call+self.User.phone_call_missed))
+  except ZeroDivisionError:
+      self.willeness_to_chat = "- 'недостатньо інформації'"

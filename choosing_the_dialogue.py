@@ -6,7 +6,8 @@ try:
     me = info['personal_information']["first_name"] + \
         info['personal_information']["last_name"]
 except:
-    me='Аня'
+    me = 'Аня'
+
 
 def detect_user(chats):
     for mes in chats['messages']:

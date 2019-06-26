@@ -13,7 +13,7 @@ def func_second():
     all_chats = choosing_the_dialogue.start()[1]
     for chat in all_chats:
         print(chat)
-    name = input()
+    name = input("Enter the chat name here: ")
     if name in all_chats:
         pass
         messages_analys.reading(name)

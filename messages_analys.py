@@ -1,6 +1,7 @@
 import json
 import operator
 from analizer import Analizer
+self_name = 'Аня'
 
 
 class Audio_message():
@@ -65,6 +66,7 @@ class Phone_call():
 
 class Other_message():
     def __init__(self, message):
+
         self.arriver = message['from']
         self.text = message["text"]
         self.date = message['date']
@@ -85,6 +87,9 @@ class Text_message():
         self.to_words()
 
     def to_words(self):
+        """
+        Segragates words and chars
+        """
         self.words = []
         self.chars = []
         words = self.text.split()
@@ -102,6 +107,9 @@ class Text_message():
             self.words.append(new_word)
 
     def is_big(self):
+        """
+        Finds big letters
+        """
         for let in self.text:
             if let.isupper():
                 if self.caps[0]:
@@ -140,6 +148,9 @@ class Chat:
         self.total = 0
 
     def handle_message(self, message):
+        """
+        Takes messages and creates classes objects with its types
+        """
         self.mes = message
         self.total += 1
         self.type = self.mes['type']
@@ -169,19 +180,27 @@ class Chat:
         self.previous_message = self.mes
 
     def detect_arriver(self):
+        """
+        Detects arriver
+        """
         if self.mes.arriver == self.u1.name:
             self.mes.go_to_user(self.u1)
         else:
             self.mes.go_to_user(self.u2)
 
     def add_time(self):
-
+        """
+        Calculates the time from D M Y ... to seconds
+        """
         t_t = self.mes.date
         self.mes.time = int(t_t[17:19])+int(t_t[14:16])*60+int(
             t_t[11:13]) * 3600+int(t_t[8:10])*3600*24+int(t_t[5:7])*3600*24*30+(int(t_t[:4])-2016)*3600*24*30*365
 
     def handle_time(self):
-
+        """
+        creates the new dialodue object and add info about previous one
+        if the dialogue is fifnished (break is more than 8 hours)
+        """
         self.new_dialogue.handle_message_time(self.mes)
         if self.new_dialogue.is_finished:
             self.dialogues.append(self.new_dialogue.result())
@@ -220,28 +239,31 @@ class User():
         self.handle_emotions()
         # self.sort_dicts()
 
-        print("caps", self.caps)
-        print("name", self.name)
-        print("messages", self.messages)
-        print("text mes", self.text_messages)
-        print("text_mes_len", self.text_messages_len)
-        print("phone_call", self.phone_call)
-        print('missed_cal', self.phone_call_missed)
-        print('call_len', self.phone_call_len)
-        # print(self.top_words)
-        # print(self.top_chars)
-
-        # print(self.sorted_top_words[-20:])
-        # print(self.sorted_top_chars)
-
-        print('mp3_num', self.mp3_messages_number)
-        print('mp3_len', self.mp3_messages_len)
-        print('mp4_num', self.mp4_messages_number)
-        print('mp4_len', self.mp4_messages_len)
-        print(self.emotions)
-        return "Zopa"
+        # print("caps letters", self.caps)
+        # print("name", self.name)
+        # print("messages", self.messages)
+        # print("text mes", self.text_messages)
+        # print("text_mes_len", self.text_messages_len)
+        # print("phone_call", self.phone_call)
+        # print('missed_cal', self.phone_call_missed)
+        # print('call_len', self.phone_call_len)
+        # # print(self.top_words)
+        # # print(self.top_chars)
+        #
+        # # print(self.sorted_top_words[-20:])
+        # # print(self.sorted_top_chars)
+        #
+        # print('mp3_num', self.mp3_messages_number)
+        # print('mp3_len', self.mp3_messages_len)
+        # print('mp4_num', self.mp4_messages_number)
+        # print('mp4_len', self.mp4_messages_len)
+        # print(self.emotions)
+        return "here is info"
 
     def sort_dicts(self):
+        """
+        Sorts dicts with top users words and chars
+        """
         self.sorted_top_words = sorted(
             self.top_words.items(), key=lambda x: x[1])
         self.sorted_top_chars = sorted(
@@ -262,7 +284,11 @@ class Dialogue(Chat):
         self.is_finished = False
 
     def handle_message_time(self, mes):
-        self.wait = mes.time-self.cur_mes_time
+        """
+        detects time between messages and the mes arriver
+        if person anvered the message timer stops
+        """
+        self.wait = mes.time - self.cur_mes_time
         if self.wait > 8*3600:
             self.break_time += self.wait
             self.finisher = self.cur_arriver
@@ -276,25 +302,36 @@ class Dialogue(Chat):
         self.cur_mes_time = mes.time
 
     def set_initiator(self, mes):
+        """
+        return the cur messae arriver
+        """
         if mes.arriver == self.u1.name:
             return self.u1
         else:
             return self.u2
 
     def add_time(self):
+        """
+        Adds time to user
+        """
         if self.cur_arriver == self.u1:
             self.u1.wait_time += self.wait
         if self.cur_arriver == self.u2:
             self.u2.wait_time += self.wait
 
     def change_cur_arriver(self):
+        """
+        Changes arriver
+        """
         if self.cur_arriver == self.u1:
             self.cur_arriver = self.u2
-        if self.cur_arriver == self.u2:
+        elif self.cur_arriver == self.u2:
             self.cur_arriver = self.u1
 
     def result(self):
-
+        """
+        Returns thedialogue result (time, arriver, finisher)
+        """
         return [self.initiator.name, str(self.u1.wait_time), str(self.u2.wait_time), str(self.break_time), self.finisher.name]
 
 
@@ -308,13 +345,15 @@ class Emotional_Sence:
     PUNCTUATION = ".,-?:;*^%&#@"
 
     def __init__(self, words, chars, caps):
-        print(len(chars), chars)
         self.words = words
         self.chars = chars
         self.result = {"sad": 0, "stressed": int(caps),
                        "laught": 0, "love": 0, "bags": 0, "punctuation": 0, 'other': 0}
 
     def analize(self):
+        """
+        finds each tpe of emotions in the dialogue and calculates
+        """
         self.result['other'] += self.result['stressed']
         self.result["sad"] = self.find(self.SAD)
         self.result["stressed"] += self.find(self.STRESSED)
@@ -326,9 +365,16 @@ class Emotional_Sence:
                                                  self.result["stressed"] +
                                                  self.result["laught"]+self.result["love"])
 
+        if self.result['other'] < 0:
+            self.result['other'] = 0
+
         return self.result
 
     def find(self, emotion, words=False):
+        """
+        "xaxaxaxxaxa'-LAUGHT
+        "Aaaaaaaaaaa'- as usually panica
+        """
         result = 0
         if not words:
             for ch in self.chars:
@@ -338,7 +384,7 @@ class Emotional_Sence:
             for ch in self.words:
                 if "аха" in ch:
                     self.result['laught'] += int(len(ch)//4)
-                if "ааааааа" in ch:
+                if "ааа" in ch:
                     self.result["stressed"] += int(len(ch)//10)+1
                 if ch in emotion:
                     result += 1
@@ -351,7 +397,7 @@ def dialogue_analiz(dialogues):
     u1_wait_time = 0
     u2_wait_time = 0
     for d in dialogues:
-        if d[0] == "Диана":
+        if d[0] == self_name:
             u1_init += 1
         else:
             u2_init += 1
@@ -361,7 +407,9 @@ def dialogue_analiz(dialogues):
 
 
 def reading(name):
-
+    """
+    Reading all.json and return all the info
+    """
     info = json.load(open('all.json', encoding='utf-8'))
 
     for chat in info['chats']['list']:
@@ -382,7 +430,7 @@ def reading(name):
     # user1 = User(info['personal_information']["first_name"] +
     #              info['personal_information']["last_name"])
 
-    user1 = User("Диана")
+    user1 = User(self_name)
     user2 = User(name)
     cur_chat = Chat(user1, user2)
     for mes in chat['messages']:
@@ -391,5 +439,5 @@ def reading(name):
     user2.total = cur_chat.total
     print(str(user1))
     print(str(user2))
-    analiz = Analizer(user2, d_a, )
+    analiz = Analizer(user2, d_a)
     print(str(analiz))
