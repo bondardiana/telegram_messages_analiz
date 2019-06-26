@@ -24,3 +24,4 @@ Analizes your chat with person and makes the psyhological percon portrait
 - results_collegium.txt - collegium needs results
 - results_private_messages.txt - results with messages
 - cur_dialogue.json - file with the temp dialogue 
+- emotioans_sense.txt - file with emotional analys description
